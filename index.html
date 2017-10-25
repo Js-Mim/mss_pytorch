@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en" adlesseunifierdata="[&quot;{\&quot;w\&quot;:false,\&quot;id\&quot;:\&quot;com.kwizzu.fastesttube\&quot;,\&quot;name\&quot;:\&quot;FastestTube\&quot;,\&quot;isComponentMode\&quot;:true}&quot;]"><head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Online demo">
+    <meta name="author" content="ARG/SGN/TUT">
+    <link rel="icon" href="assets/favicon.ico">
+
+    <title>Singing Voice Separation - Demo</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <!--link href="assets/css/bootstrap-player.css" rel="stylesheet"-->
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet">
+
+    <link href="css/jumbotron.css" rel="stylesheet">
+    <link href="css/bootstrap3_player.css" rel="stylesheet">
+    
+  <style type="text/css"></style></head>
+
+  <style>
+  .bottom-three {
+     margin-bottom: 2.5cm;
+  }
+  </style>
+  
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <p class="navbar-text navbar-left">Monaural Singing Voice Separation via Recurrent Inference and Skip-Filtering Connections - Online Demo</p>
+	 </div>
+	 
+	<div class="collapse navbar-collapse">
+	  <p class="navbar-text navbar-right">
+        S.I. Mimilakis,
+	    K. Drossos,
+		<a href="http://www.seaandsailor.com/" target="_blank" class="navbar-link">
+	      J.F. Santos
+	    </a>,
+		<a href="https://www.tu-ilmenau.de/mt-ams/personen/schuller-gerald/" target="_blank" class="navbar-link">
+	      G. Schuller
+	    </a>,
+	    <a href="http://www.cs.tut.fi/~tuomasv" target="_blank" class="navbar-link">
+	      T. Virtanen
+	    </a>,
+		<a href="http://www.iro.umontreal.ca/~bengioy/yoshua_en/index.html" target="_blank" class="navbar-link">
+	      Y. Bengio
+	    </a>
+	  </p>
+	</div>
+	</nav>
+	<p class="bottom-three"></p>
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Singing Voice Separation</h1>
+        <p class="text-muted">This page is an on-line demo of our recent research results
+         on singing voice separation with recurrent inference and skip-filtering connections.</p>
+        <p class="text-muted">Manuscript and results can be found in our paper 
+        entitled "<i>Monaural Singing Voice Separation with Skip-Filtering Connections and Recurrent Inference of Time-Frequency Mask</i>" submitted to 
+        <a href="https://2018.ieeeicassp.org/" target="_blank">ICASSP 2018</a>.</p>
+
+        <p class="text-muted">Code can be found <a href="https://github.com/Js-Mim/mss_pytorch" target="_blank"> here.</a></p>
+	<p class="text-muted">Paper can be found <a href="https://arxiv.org/" target="_blank"> here:TBA!.</a></p>
+      </div>
+    </div>
+
+    <div class="container">
+
+        <!-- Overview -->
+	<div class="row">
+		<div class="col-md-12">
+	  		<p class="text-justify">
+	    	<h3>Overview</h3>
+    		This web-page serves as a demonstration for our work in singing voice source 
+    		separation via a recurrent inference algorithm and skip-filtering connections. 
+            We propose a method to directly learn time-frequency masks from
+            observed mixture magnitude spectra and optimize them according to their
+			effectiveness in separating the singing voice. Our method does not require
+			post-processing steps such as generalized Wiener filtering.
+	    	</p>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-12">
+                        <center>
+						<img src="method.png" alt="figure of the method" class="img-rounded img-responsive">
+                        <div class="caption">
+                          <h3>An illustration of our proposed method.</h3>
+                        </div>
+						</center>
+                        
+                </div>
+
+	</div>
+
+        <!-- Methods -->
+        <div class="row">					
+                <div class="col-md-12">
+                <div class="container">
+                  <h3>Audio demonstration contains files from our three best models:</h3>
+                  <ul class="list-group">
+
+                    <li class="list-group-item list-group-item-info">Recurrent inference model using 3 iterations and a higher threshold, denoted as GRU-RIS-S.</li>
+                    <li class="list-group-item list-group-item-warning">The recurrent inference algorithm is not applied, denoted as GRU-NRI.</li>
+					<li class="list-group-item list-group-item-success">Recurrent inference model using 10 iterations and a low threshold, denoted as GRU-RIS-L.</li>
+                    
+                  </ul>
+
+                </div>
+				</div>
+		
+        </div>
+
+        <!-- Demo Eval-Subset -->
+        <div class="row">
+                <div class="col-md-12">
+                <div class="container">
+                  <div class="container">
+					<h3>Audio Demo on Evaluation subset:</h3>
+                    <ul class="nav nav-tabs">
+                      <li class="active"><a data-toggle="tab" href="#menu0">Schoolboy Fascination</a></li>
+                      <li><a data-toggle="tab" href="#menu1">Too Much</a></li>
+                      <li><a data-toggle="tab" href="#menu2">Back from the Start</a></li>
+                      <li><a data-toggle="tab" href="#menu3">The English Actor</a></li>
+                      <li><a data-toggle="tab" href="#menu4">Come Around</a></li>
+                      <li><a data-toggle="tab" href="#menu5">Kaathaadi</a></li>
+                      <li><a data-toggle="tab" href="#menu6">What Have you Done to Me</a></li>
+					  <li><a data-toggle="tab" href="#menu7">Rothko</a></li>
+                    </ul>
+
+                    <div class="tab-content">
+						<div id="menu0" class="tab-pane fade in active">
+                        <h3>Audio Examples:</h3>
+                        <div class="btn-group-vertical">
+							<button type="button" class="btn btn-default btn-xs">Mix
+                              <audio controls>
+                              <source src="mp3files/Al James - Schoolboy Fascination-01.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn btn-xs">True Source
+                              <audio controls>
+                              <source src="mp3files/Al James - Schoolboy Fascination-02.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-info btn-xs">GRU-RIS-S
+                              <audio controls>
+                              <source src="mp3files/Al James - Schoolboy Fascination-05.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-warning btn-xs">GRU-NRI
+                              <audio controls>
+                              <source src="mp3files/Al James - Schoolboy Fascination-04.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-success btn-xs">GRU-RIS-L
+                              <audio controls>
+                              <source src="mp3files/Al James - Schoolboy Fascination-03.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							</div>
+							</div>
+						<div id="menu1" class="tab-pane fade in">
+                        <h3>Audio Examples:</h3>
+                        <div class="btn-group-vertical">
+							<button type="button" class="btn btn-default btn-xs">Mix
+                              <audio controls>
+                              <source src="mp3files/BKS - Too Much-01.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn btn-xs">True Source
+                              <audio controls>
+                              <source src="mp3files/BKS - Too Much-02.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-info btn-xs">GRU-RIS-S
+                              <audio controls>
+                              <source src="mp3files/BKS - Too Much-05.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-warning btn-xs">GRU-NRI
+                              <audio controls>
+                              <source src="mp3files/BKS - Too Much-04.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-success btn-xs">GRU-RIS-L
+                              <audio controls>
+                              <source src="mp3files/BKS - Too Much-03.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							</div>
+							</div>
+						<div id="menu2" class="tab-pane fade in">
+                        <h3>Audio Examples:</h3>
+                        <div class="btn-group-vertical">
+							<button type="button" class="btn btn-default btn-xs">Mix
+                              <audio controls>
+                              <source src="mp3files/Fergessen - Back from the Start-01.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn btn-xs">True Source
+                              <audio controls>
+                              <source src="mp3files/Fergessen - Back from the Start-02.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-info btn-xs">GRU-RIS-S
+                              <audio controls>
+                              <source src="mp3files/Fergessen - Back from the Start-05.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-warning btn-xs">GRU-NRI
+                              <audio controls>
+                              <source src="mp3files/Fergessen - Back from the Start-04.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-success btn-xs">GRU-RIS-L
+                              <audio controls>
+                              <source src="mp3files/Fergessen - Back from the Start-03.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							</div>
+							</div>
+						<div id="menu3" class="tab-pane fade in">
+                        <h3>Audio Examples:</h3>
+                        <div class="btn-group-vertical">
+							<button type="button" class="btn btn-default btn-xs">Mix
+                              <audio controls>
+                              <source src="mp3files/James Elder - The English Actor-01.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn btn-xs">True Source
+                              <audio controls>
+                              <source src="mp3files/James Elder - The English Actor-02.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-info btn-xs">GRU-RIS-S
+                              <audio controls>
+                              <source src="mp3files/James Elder - The English Actor-05.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-warning btn-xs">GRU-NRI
+                              <audio controls>
+                              <source src="mp3files/James Elder - The English Actor-04.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-success btn-xs">GRU-RIS-L
+                              <audio controls>
+                              <source src="mp3files/James Elder - The English Actor-03.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							</div>
+							</div>
+						<div id="menu4" class="tab-pane fade in">
+                        <h3>Audio Examples:</h3>
+                        <div class="btn-group-vertical">
+							<button type="button" class="btn btn-default btn-xs">Mix
+                              <audio controls>
+                              <source src="mp3files/Leaf - Come Around-01.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn btn-xs">True Source
+                              <audio controls>
+                              <source src="mp3files/Leaf - Come Around-02.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-info btn-xs">GRU-RIS-S
+                              <audio controls>
+                              <source src="mp3files/Leaf - Come Around-05.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-warning btn-xs">GRU-NRI
+                              <audio controls>
+                              <source src="mp3files/Leaf - Come Around-04.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-success btn-xs">GRU-RIS-L
+                              <audio controls>
+                              <source src="mp3files/Leaf - Come Around-03.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							</div>
+							</div>
+						<div id="menu5" class="tab-pane fade in">
+                        <h3>Audio Examples:</h3>
+                        <div class="btn-group-vertical">
+							<button type="button" class="btn btn-default btn-xs">Mix
+                              <audio controls>
+                              <source src="mp3files/Sambasevam Shanmugam - Kaathaadi-01.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn btn-xs">True Source
+                              <audio controls>
+                              <source src="mp3files/Sambasevam Shanmugam - Kaathaadi-02.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-info btn-xs">GRU-RIS-S
+                              <audio controls>
+                              <source src="mp3files/Sambasevam Shanmugam - Kaathaadi-05.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-warning btn-xs">GRU-NRI
+                              <audio controls>
+                              <source src="mp3files/Sambasevam Shanmugam - Kaathaadi-04.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-success btn-xs">GRU-RIS-L
+                              <audio controls>
+                              <source src="mp3files/Sambasevam Shanmugam - Kaathaadi-03.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							</div>
+							</div>
+						<div id="menu6" class="tab-pane fade in">
+                        <h3>Audio Examples:</h3>
+                        <div class="btn-group-vertical">
+							<button type="button" class="btn btn-default btn-xs">Mix
+                              <audio controls>
+                              <source src="mp3files/Signe Jakobsen - What Have You Done To Me-01.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn btn-xs">True Source
+                              <audio controls>
+                              <source src="mp3files/Signe Jakobsen - What Have You Done To Me-02.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-info btn-xs">GRU-RIS-S
+                              <audio controls>
+                              <source src="mp3files/Signe Jakobsen - What Have You Done To Me-05.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-warning btn-xs">GRU-NRI
+                              <audio controls>
+                              <source src="mp3files/Signe Jakobsen - What Have You Done To Me-04.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-success btn-xs">GRU-RIS-L
+                              <audio controls>
+                              <source src="mp3files/Signe Jakobsen - What Have You Done To Me-03.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							</div>
+							</div>
+						<div id="menu7" class="tab-pane fade in">
+                        <h3>Audio Examples:</h3>
+                        <div class="btn-group-vertical">
+							<button type="button" class="btn btn-default btn-xs">Mix
+                              <audio controls>
+                              <source src="mp3files/The Wrong'Uns - Rothko-01.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn btn-xs">True Source
+                              <audio controls>
+                              <source src="mp3files/The Wrong'Uns - Rothko-02.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-info btn-xs">GRU-RIS-S
+                              <audio controls>
+                              <source src="mp3files/The Wrong'Uns - Rothko-05.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-warning btn-xs">GRU-NRI
+                              <audio controls>
+                              <source src="mp3files/The Wrong'Uns - Rothko-04.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							<button type="button" class="btn btn-success btn-xs">GRU-RIS-L
+                              <audio controls>
+                              <source src="mp3files/The Wrong'Uns - Rothko-03.mp3" type="audio/mpeg" />
+                              </audio>
+							</button>
+							</div>
+							</div>
+					</div>
+						
+					 
+						
+					</div>
+			</div>
+        </div>
+		</div>
+		
+		
+        <!-- Demo Commercial Mixtures-->
+        <div class="row">
+                <div class="col-md-12">
+                <div class="container">
+                  <div class="container">
+                    <h3>Our best proposed method processing commercial music mixtures:</h3>
+                    <ul class="nav nav-tabs">
+                      <li class="active"><a data-toggle="tab" href="#menu0b">Bjork - Bachelorette</a></li>
+                      <li><a data-toggle="tab" href="#menu1b">CAN - Vitamin C</a></li>
+                      <li><a data-toggle="tab" href="#menu2b">Chelsea Wolfe - Warden</a></li>
+					  <li><a data-toggle="tab" href="#menu3b">Clutch - 10001110101</a></li>
+					  <li><a data-toggle="tab" href="#menu4b">Hexvessel - Preacher's Orchard</a></li>
+					  <li><a data-toggle="tab" href="#menu5b">Igorrr - Tout Petit Moineau</a></li>
+					  <li><a data-toggle="tab" href="#menu6b">Kanute - Not Sleeping</a></li>
+                      <li><a data-toggle="tab" href="#menu7b">La Coka Nostra - That's Coke</a></li>
+                      <li><a data-toggle="tab" href="#menu8b">Trentemoller - Even Though You Are with Another Girl</a></li>
+                    </ul>
+					
+				<div class="tab-content">
+                    <div id="menu0b" class="tab-pane fade in active">
+                      <h3>Audio Examples:</h3>
+                      <div class="btn-group-horizontal">
+                        <button type="button" class="btn btn-default">Mix
+                            <audio controls>
+                            <source src="mp3files/commercial_mixtures/bjork_mix.mp3" type="audio/mpeg" />
+                            </audio>
+                        </button>
+                        <button type="button" class="btn btn-warning">GRU-RIS-L
+                            <audio controls>
+                            <source src="mp3files/commercial_mixtures/bjork_sv.mp3" type="audio/mpeg" />
+                            </audio>
+                        </button>
+                      </div>
+                      </div>
+					  
+					  <div id="menu1b" class="tab-pane fade in">
+                      <h3>Audio Examples:</h3>
+                      <div class="btn-group-horizontal">
+                        <button type="button" class="btn btn-default">Mix
+                            <audio controls>
+                            <source src="mp3files/commercial_mixtures/can_mix.mp3" type="audio/mpeg" />
+                            </audio>
+                        </button>
+                        <button type="button" class="btn btn-warning">GRU-RIS-L
+                            <audio controls>
+                            <source src="mp3files/commercial_mixtures/can_sv.mp3" type="audio/mpeg" />
+                            </audio>
+                        </button>
+                      </div>
+                      </div>
+					  
+					  <div id="menu2b" class="tab-pane fade in">
+                      <h3>Audio Examples:</h3>
+                      <div class="btn-group-horizontal">
+                        <button type="button" class="btn btn-default">Mix
+                            <audio controls>
+                            <source src="mp3files/commercial_mixtures/chelsea_wolfe_mix.mp3" type="audio/mpeg" />
+                            </audio>
+                        </button>
+                        <button type="button" class="btn btn-warning">GRU-RIS-L
+                            <audio controls>
+                            <source src="mp3files/commercial_mixtures/chelsea_wolfe_sv.mp3" type="audio/mpeg" />
+                            </audio>
+                        </button>
+                      </div>
+                      </div>
+					  
+					  
+					  <div id="menu3b" class="tab-pane fade in">
+                      <h3>Audio Examples:</h3>
+                      <div class="btn-group-horizontal">
+                        <button type="button" class="btn btn-default">Mix
+                            <audio controls>
+                            <source src="mp3files/commercial_mixtures/clutch_mix.mp3" type="audio/mpeg" />
+                            </audio>
+                        </button>
+                        <button type="button" class="btn btn-warning">GRU-RIS-L
+                            <audio controls>
+                            <source src="mp3files/commercial_mixtures/clutch_sv.mp3" type="audio/mpeg" />
+                            </audio>
+                        </button>
+                      </div>
+                      </div>
+					  
+					  <div id="menu4b" class="tab-pane fade in">
+                      <h3>Audio Examples:</h3>
+                      <div class="btn-group-horizontal">
+                        <button type="button" class="btn btn-default">Mix
+                            <audio controls>
+                            <source src="mp3files/commercial_mixtures/hexvessel_mix.mp3" type="audio/mpeg" />
+                            </audio>
+                        </button>
+                        <button type="button" class="btn btn-warning">GRU-RIS-L
+                            <audio controls>
+                            <source src="mp3files/commercial_mixtures/hexvessel_sv.mp3" type="audio/mpeg" />
+                            </audio>
+                        </button>
+                      </div>
+                      </div>
+					  
+					  <div id="menu5b" class="tab-pane fade in">
+                      <h3>Audio Examples:</h3>
+                      <div class="btn-group-horizontal">
+                        <button type="button" class="btn btn-default">Mix
+                            <audio controls>
+                            <source src="mp3files/commercial_mixtures/igorrr_mix.mp3" type="audio/mpeg" />
+                            </audio>
+                        </button>
+                        <button type="button" class="btn btn-warning">GRU-RIS-L
+                            <audio controls>
+                            <source src="mp3files/commercial_mixtures/igorrr_sv.mp3" type="audio/mpeg" />
+                            </audio>
+                        </button>
+                      </div>
+                      </div>
+					  
+					  <div id="menu6b" class="tab-pane fade in">
+                      <h3>Audio Examples:</h3>
+                      <div class="btn-group-horizontal">
+                        <button type="button" class="btn btn-default">Mix
+                            <audio controls>
+                            <source src="mp3files/commercial_mixtures/kanute_mix.mp3" type="audio/mpeg" />
+                            </audio>
+                        </button>
+                        <button type="button" class="btn btn-warning">GRU-RIS-L
+                            <audio controls>
+                            <source src="mp3files/commercial_mixtures/kanute_sv.mp3" type="audio/mpeg" />
+                            </audio>
+                        </button>
+                      </div>
+                      </div>
+					  
+					  
+					  <div id="menu7b" class="tab-pane fade in">
+                      <h3>Audio Examples:</h3>
+                      <div class="btn-group-horizontal">
+                        <button type="button" class="btn btn-default">Mix
+                            <audio controls>
+                            <source src="mp3files/commercial_mixtures/lcn_thats_coke_mix.mp3" type="audio/mpeg" />
+                            </audio>
+                        </button>
+                        <button type="button" class="btn btn-warning">GRU-RIS-L
+                            <audio controls>
+                            <source src="mp3files/commercial_mixtures/lcn_thats_coke_sv.mp3" type="audio/mpeg" />
+                            </audio>
+                        </button>
+                      </div>
+                      </div>
+					  
+					  <div id="menu8b" class="tab-pane fade in">
+                      <h3>Audio Examples:</h3>
+                      <div class="btn-group-horizontal">
+                        <button type="button" class="btn btn-default">Mix
+                            <audio controls>
+                            <source src="mp3files/commercial_mixtures/trentemoller_mix.mp3" type="audio/mpeg" />
+                            </audio>
+                        </button>
+                        <button type="button" class="btn btn-warning">GRU-RIS-L
+                            <audio controls>
+                            <source src="mp3files/commercial_mixtures/trentemoller_sv.mp3" type="audio/mpeg" />
+                            </audio>
+                        </button>
+                      </div>
+                      </div>
+				
+				</div>
+                    </div>
+                  </div>
+			</div>
+		</div>
+                
+                <!-- Acknowledgements -->
+        <div class="row">
+                <div class="col-md-12">
+                <div class="container">
+                  <h3>Acknowledgements:</h3>
+					The research leading to these results has received funding from the European
+					Union's H2020 Framework Programme (H2020-MSCA-ITN-2014) under grant agreement no 642685 MacSeNet.
+                </div>
+                </div>
+
+        </div>
+
+            <footer>
+			<div class="collapse navbar-collapse">
+			  <p class="navbar-text navbar-right">
+				S.I. Mimilakis,
+				K. Drossos,
+				<a href="http://www.seaandsailor.com/" target="_blank" class="navbar-link">
+				  J.F. Santos
+				</a>,
+				<a href="https://www.tu-ilmenau.de/mt-ams/personen/schuller-gerald/" target="_blank" class="navbar-link">
+				  G. Schuller
+				</a>,
+				<a href="http://www.cs.tut.fi/~tuomasv" target="_blank" class="navbar-link">
+				  T. Virtanen
+				</a>,
+				<a href="http://www.iro.umontreal.ca/~bengioy/yoshua_en/index.html" target="_blank" class="navbar-link">
+				  Y. Bengio
+				</a>
+			  </p>
+	</div>
+			</footer>
+        </div>
+</div>
+</div> <!-- /container -->
+
+
+
+
+    <!-- ================================================== -->
+    <!-- ================================================== -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="assets/js/bootstrap-player.js"></script>
+    <script src="js/bootstrap3_player.js"></script>
+    </div>
+  </div>
+  
+
+
+</body></html>
