@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+__author__ = 'J.F. Santos, K. Drossos'
+
 import torch
 
 def iterative_inference(module, x, criterion=None, tol=1e-9, max_iter=10):
