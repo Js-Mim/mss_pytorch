@@ -206,14 +206,14 @@ def test_eval(nnet, B, T, N, L, wsz, hop):
         else:
             bk_hat = mix - sv_hat[:len(mix)]
 
-        # Disk writing for external BSS_eval using DSD100-tools
-        #Io.wavWrite(sv_true, 44100, 16, os.path.join(save_path, 'tf_true_sv_' + str(indx) + '.wav'))
-        #Io.wavWrite(bk_true, 44100, 16, os.path.join(save_path, 'tf_true_bk_' + str(indx) + '.wav'))
-        #Io.wavWrite(sv_hat, 44100, 16, os.path.join(save_path, 'tf_hat_sv_' + str(indx) + '.wav'))
-        #Io.wavWrite(bk_hat, 44100, 16, os.path.join(save_path, 'tf_hat_bk_' + str(indx) + '.wav'))
-        #Io.wavWrite(mix, 44100, 16, os.path.join(save_path, 'tf_mix_' + str(indx) + '.wav'))
+        # Disk writing for external BSS_eval using DSD100-tools (used in our paper)
+        Io.wavWrite(sv_true, 44100, 16, os.path.join(save_path, 'tf_true_sv_' + str(indx) + '.wav'))
+        Io.wavWrite(bk_true, 44100, 16, os.path.join(save_path, 'tf_true_bk_' + str(indx) + '.wav'))
+        Io.wavWrite(sv_hat, 44100, 16, os.path.join(save_path, 'tf_hat_sv_' + str(indx) + '.wav'))
+        Io.wavWrite(bk_hat, 44100, 16, os.path.join(save_path, 'tf_hat_bk_' + str(indx) + '.wav'))
+        Io.wavWrite(mix, 44100, 16, os.path.join(save_path, 'tf_mix_' + str(indx) + '.wav'))
 
-        # Internal BSSEval using librosa
+        # Internal BSSEval using librosa (just for comparisson)
         if len(sv_true) > len(sv_hat):
             c_sdr, _, c_sir, c_sar, _ = bss_eval.bss_eval_images_framewise([sv_true[:len(sv_hat)], bk_true[:len(sv_hat)]],
                                                                            [sv_hat, bk_hat])
@@ -242,7 +242,6 @@ def test_nnet(nnet, seqlen=100, olap=40, wsz=2049, N=4096, hop=384, B=16):
     seg = 2
     w = tf.hamming(wsz, True)
     x, fs = Io.wavRead('/home/mis/Documents/Python/Projects/SourceSeparation/testFiles/supreme_test3.wav', mono=True)
-    #x = x[(seg-1)*30*fs:seg*30*fs]
 
     mx, px = tf.TimeFrequencyDecomposition.STFT(x, w, N, hop)
 
