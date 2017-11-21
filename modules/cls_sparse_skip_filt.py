@@ -104,7 +104,7 @@ class Decoder(nn.Module):
         Decoder part.
     """
 
-    def __init__(self, B, T, N, F, L):
+    def __init__(self, B, T, N, F, L, infr):
         """
         Constructing blocks of the model based
         on the sparse skip-filtering connections.
@@ -115,6 +115,7 @@ class Decoder(nn.Module):
             F      : (int) Dimensionallity of the input
                            (Amount of frequency sub-bands).
             L      : (int) Length of the half context time-sequence.
+            infr   : (bool)If the decoder uses recurrent inference or not.
         """
         super(Decoder, self).__init__()
         self._B = B
@@ -122,9 +123,13 @@ class Decoder(nn.Module):
         self._N = N
         self._F = F
         self._L = L
+        if infr:
+            self._gruout = 2*self._F
+        else:
+            self._gruout = self._F
 
         # GRU Decoder
-        self.gruDec = nn.GRUCell(2*self._F, 2*self._F)
+        self.gruDec = nn.GRUCell(2*self._F, self._gruout)
 
         # Initialize the weights
         self.initialize_decoder()
@@ -141,33 +146,26 @@ class Decoder(nn.Module):
         print('Initialization of the decoder done...')
         return None
 
-    def forward(self, H_enc, input_x):
+    def forward(self, H_enc):
         if torch.has_cudnn:
             # Initialization of the hidden states
-            h_t_dec = Variable(torch.zeros(self._B, 2*self._F).cuda(), requires_grad=False)
+            h_t_dec = Variable(torch.zeros(self._B, self._gruout).cuda(), requires_grad=False)
 
             # Initialization of the decoder output
-            H_j_dec = Variable(torch.zeros(self._B, self._T - (self._L * 2), 2*self._F).cuda(), requires_grad=False)
-
-            # Input is of the shape : (B, T, N)
-            input_x = Variable(torch.from_numpy(input_x[:, self._L:-self._L, :]).cuda(), requires_grad=True)
+            H_j_dec = Variable(torch.zeros(self._B, self._T - (self._L * 2), self._gruout).cuda(), requires_grad=False)
 
         else:
             # Initialization of the hidden states
-            h_t_dec = Variable(torch.zeros(self._B, 2*self._F), requires_grad=False)
+            h_t_dec = Variable(torch.zeros(self._B, self._gruout), requires_grad=False)
 
             # Initialization of the decoder output
-            H_j_dec = Variable(torch.zeros(self._B, self._T - (self._L * 2), 2*self._F), requires_grad=False)
-
-            # Input is of the shape : (B, T, N)
-            # Cropping some "un-necessary" frequency sub-bands
-            input_x = Variable(torch.from_numpy(input_x[:, self._L:-self._L, :]), requires_grad=True)
+            H_j_dec = Variable(torch.zeros(self._B, self._T - (self._L * 2), self._gruout), requires_grad=False)
 
         for ts in range(self._T - (self._L * 2)):
             # Removing context before decoding
             # GRU Decoding
             h_t_dec = self.gruDec(H_enc[:, ts, :], h_t_dec)
-            H_j_dec[:, ts, :] = h_t_dec + input_x[:, ts, :2*self._F]
+            H_j_dec[:, ts, :] = h_t_dec
 
         return H_j_dec
 
@@ -179,7 +177,7 @@ class SparseDecoder(nn.Module):
         Decoder part.
     """
 
-    def __init__(self, B, T, N, F, L):
+    def __init__(self, B, T, N, F, L, ifnr=True):
         """
         Constructing blocks of the model based
         on the sparse skip-filtering connections.
@@ -190,6 +188,7 @@ class SparseDecoder(nn.Module):
             F      : (int) Dimensionallity of the input
                            (Amount of frequency sub-bands).
             L      : (int) Length of the half context time-sequence.
+            infr   : (bool)If the GRU decoder used recurrent inference or not.
         """
         super(SparseDecoder, self).__init__()
         self._B = B
@@ -199,7 +198,10 @@ class SparseDecoder(nn.Module):
         self._L = L
 
         # FF Sparse Decoder
-        self.ffDec = nn.Linear(2*self._F, self._N)
+        if ifnr:
+            self.ffDec = nn.Linear(2*self._F, self._N)
+        else:
+            self.ffDec = nn.Linear(self._F, self._N)
 
         # Initialize the weights
         self.initialize_decoder()
