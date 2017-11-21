@@ -178,8 +178,8 @@ def test_eval(nnet, B, T, N, L, wsz, hop):
         for batch in xrange(mx.shape[0]/B):
             H_enc = nnet[0](mx[batch * B: (batch+1)*B, :, :])
 
-            H_j_dec = it_infer.iterative_recurrent_inference(nnet[1], H_enc, mx[batch * B: (batch+1)*B, :, :],
-                                                                 criterion=None, tol=1e-3, max_iter=10)
+            H_j_dec = it_infer.iterative_recurrent_inference(nnet[1], H_enc,
+                                                             criterion=None, tol=1e-3, max_iter=10)
 
             vs_hat, mask = nnet[2](H_j_dec, mx[batch * B: (batch+1)*B, :, :])
             y_out = nnet[3](vs_hat)
@@ -213,7 +213,7 @@ def test_eval(nnet, B, T, N, L, wsz, hop):
         Io.wavWrite(bk_hat, 44100, 16, os.path.join(save_path, 'tf_hat_bk_' + str(indx) + '.wav'))
         Io.wavWrite(mix, 44100, 16, os.path.join(save_path, 'tf_mix_' + str(indx) + '.wav'))
 
-        # Internal BSSEval using librosa (just for comparisson)
+        # Internal BSSEval using librosa (just for comparison)
         if len(sv_true) > len(sv_hat):
             c_sdr, _, c_sir, c_sar, _ = bss_eval.bss_eval_images_framewise([sv_true[:len(sv_hat)], bk_true[:len(sv_hat)]],
                                                                            [sv_hat, bk_hat])
@@ -252,8 +252,8 @@ def test_nnet(nnet, seqlen=100, olap=40, wsz=2049, N=4096, hop=384, B=16):
     for batch in xrange(mx.shape[0]/B):
         # Mixture to Singing voice
         H_enc = nnet[0](mx[batch * B: (batch+1)*B, :, :])
-        H_j_dec = it_infer.iterative_recurrent_inference(nnet[1], H_enc, mx[batch * B: (batch+1)*B, :, :],
-                                                             criterion=None, tol=1e-3, max_iter=10)
+        H_j_dec = it_infer.iterative_recurrent_inference(nnet[1], H_enc,
+                                                         criterion=None, tol=1e-3, max_iter=10)
 
         vs_hat, mask = nnet[2](H_j_dec, mx[batch * B: (batch+1)*B, :, :])
         y_out = nnet[3](vs_hat)
