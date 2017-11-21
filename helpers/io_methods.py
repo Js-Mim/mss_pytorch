@@ -2,7 +2,7 @@
 __author__ = 'S.I. Mimilakis'
 __copyright__ = 'MacSeNet'
 
-import os, subprocess, csv
+import os, subprocess
 import numpy as np
 import wave as _wave
 from scipy.io.wavfile import write, read
