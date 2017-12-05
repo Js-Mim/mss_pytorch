@@ -10,8 +10,8 @@ Listening Examples :  https://js-mim.github.io/mss_pytorch/
 ### Requirements   :
 - Numpy            :  numpy==1.13.1
 - SciPy            :  scipy==0.19.1
-- PyTorch          :  pytorch=='0.2.0_2'
-- TorchVision      :  torchvision=='0.1.9'
+- PyTorch          :  pytorch==0.2.0_2
+- TorchVision      :  torchvision==0.1.9
 - Other            :  wave(used for wav file reading), pyglet(used only for audio playback), pickle(for storing some results)
 - Trained Models   :  https://doi.org/10.5281/zenodo.1064805 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1064805.svg)](https://doi.org/10.5281/zenodo.1064805)
 - MIR_Eval         :  mir_eval=='0.4'  (This is used only for unofficial cross-validation. For the reported evaluation please refer to: https://github.com/faroit/dsdtools)
