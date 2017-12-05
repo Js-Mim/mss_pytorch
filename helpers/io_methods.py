@@ -35,7 +35,7 @@ class AudioIO:
 			IO.AudioIO.sound(x,fs)
 
 	"""
-    # Normalisation parameters for wavreading and writing
+	# Normalisation parameters for wavreading and writing
 	normFact = {'int8' : (2**7) -1,
 				'int16': (2**15)-1,
 				'int24': (2**23)-1,
@@ -417,3 +417,5 @@ if __name__ == "__main__":
 	# Listen to stereo processed
 	AudioIO.sound(x2*g,fs)
 	AudioIO.audioWrite(x2, fs, 16, 'myNewWavFile.wav', 'wav')
+
+# EOF

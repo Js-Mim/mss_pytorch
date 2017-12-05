@@ -14,6 +14,7 @@ Listening Examples :  https://js-mim.github.io/mss_pytorch/
 - TorchVision      :  torchvision==0.1.9
 - Other            :  wave(used for wav file reading), pyglet(used only for audio playback), pickle(for storing some results)
 - Trained Models   :  https://doi.org/10.5281/zenodo.1064805 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1064805.svg)](https://doi.org/10.5281/zenodo.1064805)
+					  Download and place them under "results/results_inference/"
 - MIR_Eval         :  mir_eval=='0.4'  (This is used only for unofficial cross-validation. For the reported evaluation please refer to: https://github.com/faroit/dsdtools)
 
 

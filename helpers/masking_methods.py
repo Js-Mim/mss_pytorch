@@ -3,11 +3,12 @@ __author__ = 'S.I. Mimilakis'
 __copyright__ = 'MacSeNet'
 
 import numpy as np
-from scipy.fftpack import fft, ifft
-from tf_methods import TimeFrequencyDecomposition as TF
+from scipy.fftpack import fft
+
 
 class FrequencyMasking:
-	"""Class containing various time-frequency masking methods, for processing Time-Frequency representations.
+	"""Class containing various time-frequency masking methods,
+	   for processing Time-Frequency representations.
 	"""
 
 	def __init__(self, mX, sTarget, nResidual, psTarget = [], pnResidual = [], alpha = 1.2, method = 'Wiener'):
@@ -28,68 +29,66 @@ class FrequencyMasking:
 		self._amountiter = 0
 
 	def __call__(self, reverse = False):
-
-		if (self._method == 'Phase'):
+		if self._method == 'Phase':
 			if not self._pTarget.size or not self._pTarget.size:
 				raise ValueError('Phase-sensitive masking cannot be performed without phase information.')
 			else:
 				FrequencyMasking.phaseSensitive(self)
-				if not(reverse) :
+				if not reverse :
 					FrequencyMasking.applyMask(self)
 				else :
 					FrequencyMasking.applyReverseMask(self)
 
-		elif (self._method == 'IRM'):
+		elif self._method == 'IRM':
 			FrequencyMasking.IRM(self)
-			if not(reverse) :
+			if not reverse:
 				FrequencyMasking.applyMask(self)
 			else :
 				FrequencyMasking.applyReverseMask(self)
 
-		elif (self._method == 'IAM'):
+		elif self._method == 'IAM':
 			FrequencyMasking.IAM(self)
-			if not(reverse) :
+			if not reverse:
 				FrequencyMasking.applyMask(self)
 			else :
 				FrequencyMasking.applyReverseMask(self)
 
-		elif (self._method == 'IBM'):
+		elif self._method == 'IBM':
 			FrequencyMasking.IBM(self)
-			if not(reverse) :
+			if not reverse:
 				FrequencyMasking.applyMask(self)
 			else :
 				FrequencyMasking.applyReverseMask(self)
 
-		elif (self._method == 'UBBM'):
+		elif self._method == 'UBBM':
 			FrequencyMasking.UBBM(self)
-			if not(reverse) :
+			if not reverse:
 				FrequencyMasking.applyMask(self)
 			else :
 				FrequencyMasking.applyReverseMask(self)
 
-
-		elif (self._method == 'Wiener'):
+		elif self._method == 'Wiener':
 			FrequencyMasking.Wiener(self)
-			if not(reverse) :
+			if not reverse:
 				FrequencyMasking.applyMask(self)
 			else :
 				FrequencyMasking.applyReverseMask(self)
 
-		elif (self._method == 'alphaWiener'):
+		elif self._method == 'alphaWiener':
 			FrequencyMasking.alphaHarmonizableProcess(self)
-			if not(reverse) :
+			if not reverse:
 				FrequencyMasking.applyMask(self)
 			else :
 				FrequencyMasking.applyReverseMask(self)
 
-		elif (self._method == 'expMask'):
+		elif self._method == 'expMask':
 			FrequencyMasking.ExpM(self)
-			if not(reverse) :
+			if not reverse:
 				FrequencyMasking.applyMask(self)
 			else :
 				FrequencyMasking.applyReverseMask(self)
 
-		elif (self._method == 'MWF'):
+		elif self._method == 'MWF':
 			print('Multichannel Wiener Filtering')
 			FrequencyMasking.MWF(self)
 
@@ -427,28 +426,29 @@ class FrequencyMasking:
 	def _IS(self, Xhat):
 		""" Compute the Itakura-Saito distance between the observed magnitude spectrum
 			and the estimated one.
-        Args:
-            mX    :   	(2D ndarray) Input Magnitude Spectrogram
-            Xhat  :     (2D ndarray) Estimated Magnitude Spectrogram
-        Returns:
-            dis   :     (float) Average Itakura-Saito distance
-        """
+		Args:
+			mX    :   	(2D ndarray) Input Magnitude Spectrogram
+			Xhat  :     (2D ndarray) Estimated Magnitude Spectrogram
+		Returns:
+			dis   :     (float) Average Itakura-Saito distance
+		"""
 		r1 = (np.abs(self._mX)**self._alpha + self._eps) / (np.abs(Xhat) + self._eps)
 		lg = np.log((np.abs(self._mX)**self._alpha + self._eps)) - np.log((np.abs(Xhat) + self._eps))
 		return np.mean(r1 - lg - 1.)
 
 	def _dIS(self, Xhat):
 		""" Computation of the first derivative of Itakura-Saito function. As appears in :
-            Cedric Fevotte and Jerome Idier, "Algorithms for nonnegative matrix factorization
-            with the beta-divergence", in CoRR, vol. abs/1010.1763, 2010.
-        Args:
-            mX    :   	(2D ndarray) Input Magnitude Spectrogram
-            Xhat  :     (2D ndarray) Estimated Magnitude Spectrogram
-        Returns:
-            dis'  :     (float) Average of first derivative of Itakura-Saito distance.
-        """
+			Cedric Fevotte and Jerome Idier, "Algorithms for nonnegative matrix factorization
+			with the beta-divergence", in CoRR, vol. abs/1010.1763, 2010.
+		Args:
+			mX    :   	(2D ndarray) Input Magnitude Spectrogram
+			Xhat  :     (2D ndarray) Estimated Magnitude Spectrogram
+		Returns:
+			dis'  :     (float) Average of first derivative of Itakura-Saito distance.
+		"""
 		dis = (np.abs(Xhat + self._eps) ** (-2.)) * (np.abs(Xhat) - np.abs(self._mX)**self._alpha)
 		return (np.mean(dis))
+
 
 if __name__ == "__main__":
 

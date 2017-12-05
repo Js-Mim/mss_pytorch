@@ -3,21 +3,19 @@ __author__ = 'S.I. Mimilakis'
 __copyright__ = 'MacSeNet'
 
 # imports
-from .io_methods import AudioIO as Io
-from .masking_methods import FrequencyMasking as Fm
+from helpers.io_methods import AudioIO as Io
+from helpers.masking_methods import FrequencyMasking as Fm
 from mir_eval import separation as bss_eval
 from numpy.lib import stride_tricks
 from helpers import iterative_inference as it_infer
-from losses import loss_functions as loss
-import matplotlib.pyplot as plt
 import pickle as pickle
 import tf_methods as tf
 import numpy as np
 import os
 
 # definitions
-mixtures_path = '/home/avdata/audio/own/dsd100/DSD100/Mixtures/'
-sources_path = '/home/avdata/audio/own/dsd100/DSD100/Sources/'
+mixtures_path = 'DSD100/Mixtures/'
+sources_path = 'DSD100/Sources/'
 keywords = ['bass.wav', 'drums.wav', 'other.wav', 'vocals.wav', 'mixture.wav']
 foldersList = ['Dev', 'Test']
 save_path = 'results/GRU_sskip_filt/inference_m3_i10plus/'
@@ -31,6 +29,26 @@ __all__ = [
 
 
 def prepare_overlap_sequences(ms, vs, bk, l_size, o_lap, bsize):
+    """
+        Method to prepare overlapping sequences of the given magnitude spectra.
+        Args:
+            ms               : (2D Array)  Mixture magnitude spectra (Time frames times Frequency sub-bands).
+            vs               : (2D Array)  Singing voice magnitude spectra (Time frames times Frequency sub-bands).
+            bk               : (2D Array)  Background magnitude spectra (Time frames times Frequency sub-bands).
+            l_size           : (int)       Length of the time-sequence.
+            o_lap            : (int)       Overlap between spectrogram time-sequences
+                                           (to recover the missing information from the context information).
+            bsize            : (int)       Batch size.
+
+        Returns:
+            ms               : (3D Array)  Mixture magnitude spectra training data
+                                           reshaped into overlapping sequences.
+            vs               : (3D Array)  Singing voice magnitude spectra training data
+                                           reshaped into overlapping sequences.
+            bk               : (3D Array)  Background magnitude spectra training data
+                                           reshaped into overlapping sequences.
+
+    """
     trim_frame = ms.shape[0] % (l_size - o_lap)
     trim_frame -= (l_size - o_lap)
     trim_frame = np.abs(trim_frame)
@@ -68,6 +86,12 @@ def get_data(current_set, set_size, wsz=2049, N=4096, hop=384, T=100, L=20, B=16
         Args:
             current_set      : (int)       An integer denoting the current training set.
             set_size         : (int)       The amount of files a set has.
+            wsz              : (int)       Window size in samples.
+            N                : (int)       The FFT size.
+            hop              : (int)       Hop size in samples.
+            T                : (int)       Length of the time-sequence.
+            L                : (int)       Number of context frames from the time-sequence.
+            B                : (int)       Batch size.
 
         Returns:
             ms_train        :  (3D Array)  Mixture magnitude training data, for the current set.
@@ -127,6 +151,20 @@ def get_data(current_set, set_size, wsz=2049, N=4096, hop=384, T=100, L=20, B=16
 
 
 def test_eval(nnet, B, T, N, L, wsz, hop):
+    """
+        Method to test the model on the test data. Writes the outcomes in ".wav" format and.
+        stores them under the defined results path. Optionally, it performs BSS-Eval using
+        MIREval python toolbox (Used only for comparison to BSSEval Matlab implementation).
+        The evaluation results are stored under the defined save path.
+        Args:
+            nnet             : (List)      A list containing the Pytorch modules of the skip-filtering model.
+            B                : (int)       Batch size.
+            T                : (int)       Length of the time-sequence.
+            N                : (int)       The FFT size.
+            L                : (int)       Number of context frames from the time-sequence.
+            wsz              : (int)       Window size in samples.
+            hop              : (int)       Hop size in samples.
+    """
     nnet[0].eval()
     nnet[1].eval()
     nnet[2].eval()
@@ -234,6 +272,19 @@ def test_eval(nnet, B, T, N, L, wsz, hop):
 
 
 def test_nnet(nnet, seqlen=100, olap=40, wsz=2049, N=4096, hop=384, B=16):
+    """
+        Method to test the model on some data. Writes the outcomes in ".wav" format and.
+        stores them under the defined results path.
+        Args:
+            nnet             : (List)      A list containing the Pytorch modules of the skip-filtering model.
+            seqlen           : (int)       Length of the time-sequence.
+            olap             : (int)       Overlap between spectrogram time-sequences
+                                           (to recover the missing information from the context information).
+            wsz              : (int)       Window size in samples.
+            N                : (int)       The FFT size.
+            hop              : (int)       Hop size in samples.
+            B                : (int)       Batch size.
+    """
     nnet[0].eval()
     nnet[1].eval()
     nnet[2].eval()
@@ -241,7 +292,7 @@ def test_nnet(nnet, seqlen=100, olap=40, wsz=2049, N=4096, hop=384, B=16):
     L = olap/2
     seg = 2
     w = tf.hamming(wsz, True)
-    x, fs = Io.wavRead('/home/mis/Documents/Python/Projects/SourceSeparation/testFiles/supreme_test3.wav', mono=True)
+    x, fs = Io.wavRead('results/test_files/test.wav', mono=True)
 
     mx, px = tf.TimeFrequencyDecomposition.STFT(x, w, N, hop)
 
@@ -282,8 +333,8 @@ def test_nnet(nnet, seqlen=100, olap=40, wsz=2049, N=4096, hop=384, B=16):
 
     x = x[olap/2 * hop:]
 
-    Io.audioWrite(y_recb, 44100, 16, 'results/test_sv.mp3', 'mp3')
-    Io.audioWrite(x[:len(y_recb)], 44100, 16, 'results/test_mix.mp3', 'mp3')
+    Io.wavWrite(y_recb, 44100, 16, 'results/test_files/test_sv.wav')
+    Io.wavWrite(x[:len(y_recb)], 44100, 16, 'results/test_files/test_mix.wav')
 
     return None
 

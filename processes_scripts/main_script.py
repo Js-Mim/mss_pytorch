@@ -9,7 +9,6 @@ import numpy as np
 from tqdm import tqdm
 from helpers import visualize, nnet_helpers
 from torch.autograd import Variable
-from torch.optim.lr_scheduler import ReduceLROnPlateau as RedLR
 from modules import cls_sparse_skip_filt as s_s_net
 from losses import loss_functions
 from helpers import iterative_inference as it_infer
@@ -44,7 +43,7 @@ def main(training, apply_sparsity):
     mask_loss_threshold = 1.5   # Scalar indicating the threshold for the time-frequency masking module
     good_loss_threshold = 0.25  # Scalar indicating the threshold for the source enhancment module
 
-    # Data
+    # Data (Predifined by the DSD100 dataset and the non-instumental/non-bleeding stems of MedleydB)
     totTrainFiles = 116
     numFilesPerTr = 4
 
@@ -164,17 +163,17 @@ def main(training, apply_sparsity):
     else:
         print('-------  Loading pre-trained model   -------')
         print('-------  Loading inference weights  -------')
-        encoder.load_state_dict(torch.load('results/results_inference/torch_sps_encoder_40_m3_i10.pytorch'))
-        decoder.load_state_dict(torch.load('results/results_inference/torch_sps_decoder_40_m3_i10.pytorch'))
-        sp_decoder.load_state_dict(torch.load('results/results_inference/torch_sps_sp_decoder_40_m3_i10.pytorch'))
-        source_enhancement.load_state_dict(torch.load('results/results_inference/torch_sps_se_40_m3_i10.pytorch'))
+        encoder.load_state_dict(torch.load('results/results_inference/torch_sps_encoder.pytorch'))
+        decoder.load_state_dict(torch.load('results/results_inference/torch_sps_decoder.pytorch'))
+        sp_decoder.load_state_dict(torch.load('results/results_inference/torch_sps_sp_decoder.pytorch'))
+        source_enhancement.load_state_dict(torch.load('results/results_inference/torch_sps_se.pytorch'))
         print('-------------      Done        -------------')
 
     return encoder, decoder, sp_decoder, source_enhancement
 
 
 if __name__ == '__main__':
-    training = True          # Whether to train or test the trained model (requires the optimized parameters)
+    training = False         # Whether to train or test the trained model (requires the optimized parameters)
     apply_sparsity = True    # Whether to apply a sparse penalty or not
 
     sfiltnet = main(training, apply_sparsity)
@@ -182,8 +181,8 @@ if __name__ == '__main__':
     #print('-------------     BSS-Eval     -------------')
     #nnet_helpers.test_eval(sfiltnet, 16, 60, 4096, 10, 2049, 384)
     #print('-------------       Done       -------------')
-    #print('-------------     DNN-Test     -------------')
-    #nnet_helpers.test_nnet(sfiltnet, 60, 10*2, 2049, 4096, 384, 16)
-    #print('-------------       Done       -------------')
+    print('-------------     DNN-Test     -------------')
+    nnet_helpers.test_nnet(sfiltnet, 60, 10*2, 2049, 4096, 384, 16)
+    print('-------------       Done       -------------')
 
 # EOF

@@ -2,12 +2,15 @@
 __author__ = 'S.I. Mimilakis'
 __copyright__ = 'MacSeNet'
 
+# imports
 import math
 import numpy as np
 from scipy.fftpack import fft, ifft
 from scipy.signal import hamming
 
+# definition
 eps = np.finfo(np.float32).tiny
+
 
 class TimeFrequencyDecomposition:
     """ A Class that performs time-frequency decompositions by means of a
@@ -15,6 +18,7 @@ class TimeFrequencyDecomposition:
         by SciPy, MDCT with modified type IV bases, PQMF,
         and Fractional Fast Fourier Transform.
     """
+
     @staticmethod
     def DFT(x, w, N):
         """ Discrete Fourier Transformation(Analysis) of a given real input signal
