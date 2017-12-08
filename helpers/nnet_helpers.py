@@ -8,6 +8,7 @@ from helpers.masking_methods import FrequencyMasking as Fm
 from mir_eval import separation as bss_eval
 from numpy.lib import stride_tricks
 from helpers import iterative_inference as it_infer
+from losses import loss_functions
 import pickle as pickle
 import tf_methods as tf
 import numpy as np
@@ -290,15 +291,12 @@ def test_nnet(nnet, seqlen=100, olap=40, wsz=2049, N=4096, hop=384, B=16):
     nnet[2].eval()
     nnet[3].eval()
     L = olap/2
-    seg = 2
     w = tf.hamming(wsz, True)
     x, fs = Io.wavRead('results/test_files/test.wav', mono=True)
 
     mx, px = tf.TimeFrequencyDecomposition.STFT(x, w, N, hop)
-
     mx, px, _ = prepare_overlap_sequences(mx, px, mx, seqlen, olap, B)
     vs_out = np.zeros((mx.shape[0], seqlen-olap, wsz), dtype=np.float32)
-    mask_out1 = np.zeros((mx.shape[0], seqlen-olap, wsz), dtype=np.float32)
 
     for batch in xrange(mx.shape[0]/B):
         # Mixture to Singing voice
@@ -310,10 +308,7 @@ def test_nnet(nnet, seqlen=100, olap=40, wsz=2049, N=4096, hop=384, B=16):
         y_out = nnet[3](vs_hat)
         vs_out[batch * B: (batch+1)*B, :, :] = y_out.data.cpu().numpy()
 
-        mask_out1[batch * B: (batch+1)*B, :, :] = mask.data.cpu().numpy()
-
     vs_out.shape = (vs_out.shape[0]*vs_out.shape[1], wsz)
-    mask_out1.shape = (mask_out1.shape[0]*mask_out1.shape[1], wsz)
 
     if olap == 1:
         mx = np.ascontiguousarray(mx, dtype=np.float32)
