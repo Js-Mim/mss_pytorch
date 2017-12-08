@@ -65,7 +65,8 @@ def main(training, apply_sparsity):
         sp_decoder.cuda()
         source_enhancement.cuda()
 
-    rec_criterion = loss_functions.kullback_leibler
+    # Defining objectives
+    rec_criterion = loss_functions.kullback_leibler                 # Reconstruction criterion
 
     optimizer = optim.Adam(list(encoder.parameters()) +
                            list(decoder.parameters()) +
