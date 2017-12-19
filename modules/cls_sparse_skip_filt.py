@@ -162,7 +162,6 @@ class Decoder(nn.Module):
             H_j_dec = Variable(torch.zeros(self._B, self._T - (self._L * 2), self._gruout), requires_grad=False)
 
         for ts in range(self._T - (self._L * 2)):
-            # Removing context before decoding
             # GRU Decoding
             h_t_dec = self.gruDec(H_enc[:, ts, :], h_t_dec)
             H_j_dec[:, ts, :] = h_t_dec
