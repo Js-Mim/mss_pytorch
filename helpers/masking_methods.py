@@ -2,6 +2,11 @@
 __author__ = 'S.I. Mimilakis'
 __copyright__ = 'MacSeNet'
 
+"""
+    Following masking methods of https://github.com/Js-Mim/ASP.
+"""
+
+# imports
 import numpy as np
 from scipy.fftpack import fft
 
@@ -11,7 +16,7 @@ class FrequencyMasking:
 	   for processing Time-Frequency representations.
 	"""
 
-	def __init__(self, mX, sTarget, nResidual, psTarget = [], pnResidual = [], alpha = 1.2, method = 'Wiener'):
+	def __init__(self, mX, sTarget, nResidual, psTarget=[], pnResidual=[], alpha=1.2, method='Wiener'):
 		self._mX = mX
 		self._eps = np.finfo(np.float).eps
 		self._sTarget = sTarget
@@ -23,69 +28,69 @@ class FrequencyMasking:
 		self._alpha = alpha
 		self._method = method
 		self._iterations = 200
-		self._lr = 1.5e-3#2e-3
+		self._lr = 1.5e-3
 		self._hetaplus = 1.1
 		self._hetaminus = 0.1
 		self._amountiter = 0
 
-	def __call__(self, reverse = False):
+	def __call__(self, reverse=False):
 		if self._method == 'Phase':
 			if not self._pTarget.size or not self._pTarget.size:
 				raise ValueError('Phase-sensitive masking cannot be performed without phase information.')
 			else:
 				FrequencyMasking.phaseSensitive(self)
-				if not reverse :
+				if not reverse:
 					FrequencyMasking.applyMask(self)
-				else :
+				else:
 					FrequencyMasking.applyReverseMask(self)
 
 		elif self._method == 'IRM':
 			FrequencyMasking.IRM(self)
 			if not reverse:
 				FrequencyMasking.applyMask(self)
-			else :
+			else:
 				FrequencyMasking.applyReverseMask(self)
 
 		elif self._method == 'IAM':
 			FrequencyMasking.IAM(self)
 			if not reverse:
 				FrequencyMasking.applyMask(self)
-			else :
+			else:
 				FrequencyMasking.applyReverseMask(self)
 
 		elif self._method == 'IBM':
 			FrequencyMasking.IBM(self)
 			if not reverse:
 				FrequencyMasking.applyMask(self)
-			else :
+			else:
 				FrequencyMasking.applyReverseMask(self)
 
 		elif self._method == 'UBBM':
 			FrequencyMasking.UBBM(self)
 			if not reverse:
 				FrequencyMasking.applyMask(self)
-			else :
+			else:
 				FrequencyMasking.applyReverseMask(self)
 
 		elif self._method == 'Wiener':
 			FrequencyMasking.Wiener(self)
 			if not reverse:
 				FrequencyMasking.applyMask(self)
-			else :
+			else:
 				FrequencyMasking.applyReverseMask(self)
 
 		elif self._method == 'alphaWiener':
 			FrequencyMasking.alphaHarmonizableProcess(self)
 			if not reverse:
 				FrequencyMasking.applyMask(self)
-			else :
+			else:
 				FrequencyMasking.applyReverseMask(self)
 
 		elif self._method == 'expMask':
 			FrequencyMasking.ExpM(self)
 			if not reverse:
 				FrequencyMasking.applyMask(self)
-			else :
+			else:
 				FrequencyMasking.applyReverseMask(self)
 
 		elif self._method == 'MWF':
@@ -108,7 +113,7 @@ class FrequencyMasking:
 
 		"""
 		print('Ideal Amplitude Ratio Mask')
-		self._mask = np.divide(self._sTarget, (self._eps + self._sTarget + self._nResidual))
+		self._mask = np.divide(self._sTarget, (self._sTarget + self._nResidual + self._eps))
 
 	def IAM(self):
 		"""
@@ -125,7 +130,7 @@ class FrequencyMasking:
 
 		"""
 		print('Ideal Amplitude Mask')
-		self._mask = np.divide(self._sTarget, (self._eps + self._nResidual))
+		self._mask = np.divide(self._sTarget, (self._nResidual + self._eps))
 
 	def ExpM(self):
 		"""
@@ -141,8 +146,8 @@ class FrequencyMasking:
 
 		"""
 		print('Exponential mask')
-		self._mask = np.divide(np.log(self._sTarget.clip(self._eps, np.inf)**self._alpha),\
-							   np.log(self._nResidual.clip(self._eps, np.inf)**self._alpha))
+		self._mask = np.divide(np.log(self._sTarget.clip(self._eps, np.inf) ** self._alpha), \
+							   np.log(self._nResidual.clip(self._eps, np.inf) ** self._alpha))
 
 	def IBM(self):
 		"""
@@ -159,7 +164,7 @@ class FrequencyMasking:
 		mask = np.divide(self._sTarget ** self._alpha, (self._eps + self._nResidual ** self._alpha))
 		bg = np.where(mask >= theta)
 		sm = np.where(mask < theta)
-		mask[bg[0],bg[1]] = 1.
+		mask[bg[0], bg[1]] = 1.
 		mask[sm[0], sm[1]] = 0.
 		self._mask = mask
 
@@ -177,10 +182,10 @@ class FrequencyMasking:
 		"""
 		print('Upper Bound Binary Mask')
 		mask = 20. * np.log(self._eps + np.divide((self._eps + (self._sTarget ** self._alpha)),
-									  ((self._eps + (self._nResidual ** self._alpha)))))
+												  ((self._eps + (self._nResidual ** self._alpha)))))
 		bg = np.where(mask >= 0)
 		sm = np.where(mask < 0)
-		mask[bg[0],bg[1]] = 1.
+		mask[bg[0], bg[1]] = 1.
 		mask[sm[0], sm[1]] = 0.
 		self._mask = mask
 
@@ -203,7 +208,7 @@ class FrequencyMasking:
 			localnResidual = self._nResidual[0] ** 2. + localsTarget
 			for indx in range(1, numElements):
 				localnResidual += self._nResidual[indx] ** 2.
-		else :
+		else:
 			localnResidual = self._nResidual[0] ** 2. + localsTarget
 
 		self._mask = np.divide((localsTarget + self._eps), (self._eps + localnResidual))
@@ -216,7 +221,7 @@ class FrequencyMasking:
     		Apr 2015, Brisbane, Australia.
 		Args:
 			sTarget:   (2D ndarray) Magnitude Spectrogram of the target component
-		    nResidual: (2D ndarray) Magnitude Spectrogram of the residual component or a list 
+		    nResidual: (2D ndarray) Magnitude Spectrogram of the residual component or a list
 									of 2D ndarrays which will be added together
 		Returns:
 			mask:      (2D ndarray) Array that contains time frequency gain values
@@ -229,9 +234,9 @@ class FrequencyMasking:
 			localnResidual = self._nResidual[0] ** self._alpha + localsTarget
 			for indx in range(1, numElements):
 				localnResidual += self._nResidual[indx] ** self._alpha
-		else :
+		else:
 			localnResidual = self._nResidual[0] ** self._alpha + localsTarget
-			 
+
 		self._mask = np.divide((localsTarget + self._eps), (self._eps + localnResidual))
 
 	def phaseSensitive(self):
@@ -250,10 +255,11 @@ class FrequencyMasking:
 			mask:      (2D ndarray) Array that contains time frequency gain values
 
 		"""
-		print('Phase Sensitive Masking.')
+		print('Truncated Phase Sensitive Masking.')
 		# Compute Phase Difference
 		Theta = (self._pTarget - self._pY)
-		self._mask = 2./ (1. + np.exp(-np.multiply(np.divide(self._sTarget, self._eps + self._nResidual), np.cos(Theta)))) - 1.
+		Theta = np.clip(np.cos(Theta), a_min=0., a_max=1.)
+		self._mask = np.divide(self._sTarget, self._eps + self._nResidual) * Theta
 
 	def optAlpha(self, initloss):
 		"""
@@ -275,9 +281,10 @@ class FrequencyMasking:
 		numElements = len(slist)
 		slist = np.asarray(slist)
 
-		alpha = np.array([1.15] * (numElements))	  # Initialize an array of alpha values to be found.
-		dloss = np.array([0.] * (numElements))  	  # Initialize an array of loss functions to be used.
-		lrs = np.array([self._lr] * (numElements))    # Initialize an array of learning rates to be applied to each source.
+		alpha = np.array([1.15] * (numElements))  # Initialize an array of alpha values to be found.
+		dloss = np.array([0.] * (numElements))  # Initialize an array of loss functions to be used.
+		lrs = np.array(
+			[self._lr] * (numElements))  # Initialize an array of learning rates to be applied to each source.
 
 		# Begin of otpimization
 		isloss = []
@@ -287,16 +294,16 @@ class FrequencyMasking:
 			Xhat = np.sum(np.power(slist, np.reshape(alpha, (numElements, 1, 1))), axis=0)
 			for source in xrange(numElements):
 				# Derivative with respect to the function of additive power spectrograms
-				dX = (slist[source, :, :]**alpha[source]) * np.log(slist[source, :, :] + self._eps)
+				dX = (slist[source, :, :] ** alpha[source]) * np.log(slist[source, :, :] + self._eps)
 
 				# Chain rule between the above derivative and the IS derivative
 				dloss[source] = self._dIS(Xhat) * np.mean(dX)
 
-			alpha -= (lrs*dloss)
+			alpha -= (lrs * dloss)
 
 			# Make sure the initial alpha are inside reasonable and comparable values
-			alpha = np.clip(alpha, a_min = 0.5, a_max = 2.)
-			alpha = np.round(alpha * 100.)/100.
+			alpha = np.clip(alpha, a_min=0.5, a_max=2.)
+			alpha = np.round(alpha * 100.) / 100.
 
 			# Store the evolution of alphas
 			alphalog.append(alpha)
@@ -320,9 +327,9 @@ class FrequencyMasking:
 					if (np.abs(isloss[-2] - isloss[-1]) < 1e-4 and np.abs(isloss[-3] - isloss[-2]) < 1e-4):
 						if (isloss[-1] > 3e-1):
 							print('Stuck...')
-							alpha = alphalog[np.argmin(isloss)-1]
+							alpha = alphalog[np.argmin(isloss) - 1]
 							isloss[-1] = isloss[np.argmin(isloss)]
-						else :
+						else:
 							print('Local Minimum Found')
 
 						print('Final Loss: ' + str(isloss[-1]) + ' with characteristic exponent(s): ' + str(alpha))
@@ -334,7 +341,7 @@ class FrequencyMasking:
 		if iter == self._iterations:
 			self._alpha = alphalog[np.argmin(isloss)]
 			self._closs = isloss[np.argmin(isloss)]
-		else :
+		else:
 			self._closs = isloss[-1]
 			self._alpha = alpha
 
@@ -360,22 +367,22 @@ class FrequencyMasking:
 			_Out:      (3D ndarray) Array that contains the estimated source.
 		"""
 		# Parameter for the update
-		flambda = 0.99								           # Forgetting Factor
+		flambda = 0.99  # Forgetting Factor
 
 		cX = self._sTarget ** self._alpha
 		cN = self._nResidual ** self._alpha
 
-		M = self._mX.shape[0]  									# Number of channels
-		gF = 1./M        										# Gain factor
-		eM = cX.shape[0]										# Number of estimated channels
-		F = cX.shape[1]											# Number of frequency samples
-		T = cX.shape[2]											# Number of time-frames
-		fout = np.zeros((M,F,T), dtype = np.float32)			# Initializing output
-		I = np.eye(M)											# Identity matrix
+		M = self._mX.shape[0]  # Number of channels
+		gF = 1. / M  # Gain factor
+		eM = cX.shape[0]  # Number of estimated channels
+		F = cX.shape[1]  # Number of frequency samples
+		T = cX.shape[2]  # Number of time-frames
+		fout = np.zeros((M, F, T), dtype=np.float32)  # Initializing output
+		I = np.eye(M)  # Identity matrix
 
 		# Initialization of covariance matrices
-		Rxx = np.repeat(np.reshape(I, (M,M,1)), F, axis = -1)
-		Rnn = np.repeat(np.reshape(I, (M,M,1)), F, axis = -1)
+		Rxx = np.repeat(np.reshape(I, (M, M, 1)), F, axis=-1)
+		Rnn = np.repeat(np.reshape(I, (M, M, 1)), F, axis=-1)
 
 		# Recursive updates
 		for t in xrange(T):
@@ -384,14 +391,14 @@ class FrequencyMasking:
 					Rxx[:, :, f] = flambda * Rxx[:, :, f] + (1. - flambda) * (cX[:, f, t])
 					Rnn[:, :, f] = flambda * Rnn[:, :, f] + (1. - flambda) * (cN[:, f, t])
 				else:
-					Rxx[:, :, f] = (np.dot(cX[:, f:f+1, t], cX[:, f:f+1, t].T))/np.sum(cX[:,f,t], axis = 0)
-					Rnn[:, :, f] = (np.dot(cN[:, f:f+1, t], cN[:, f:f+1, t].T))/np.sum(cN[:,f,t], axis = 0)
+					Rxx[:, :, f] = (np.dot(cX[:, f:f + 1, t], cX[:, f:f + 1, t].T)) / np.sum(cX[:, f, t], axis=0)
+					Rnn[:, :, f] = (np.dot(cN[:, f:f + 1, t], cN[:, f:f + 1, t].T)) / np.sum(cN[:, f, t], axis=0)
 
 				inv = np.dot(np.linalg.pinv(Rnn[:, :, f]), (Rnn[:, :, f] + Rxx[:, :, f]))
 				if eM == 1:
-					Wf = ((inv - I)/( (cN[:,f,t] + cX[:, f, t] + 1e-16)/(cX[:,f,t] + 1e-16) + np.trace(inv) * gF))
-				else :
-					Wf = ((inv - I)/(gF * np.trace(inv)))
+					Wf = ((inv - I) / ((cN[:, f, t] + cX[:, f, t] + 1e-6) / (cX[:, f, t] + 1e-6) + np.trace(inv) * gF))
+				else:
+					Wf = ((inv - I) / (gF * np.trace(inv)))
 
 				fout[:, f, t] = np.dot(Wf.T, self._mX[:, f, t])
 
@@ -407,7 +414,7 @@ class FrequencyMasking:
 		"""
 		if self._method == 'expMask':
 			self._Out = (self._mX ** self._alpha) ** self._mask
-		else :
+		else:
 			self._Out = np.multiply(self._mask, self._mX)
 
 	def applyReverseMask(self):
@@ -420,8 +427,8 @@ class FrequencyMasking:
 		"""
 		if self._method == 'expMask':
 			raise ValueError('Cannot compute that using such masking method.')
-		else :
-			self._Out = np.multiply( (1. - self._mask), self._mX)
+		else:
+			self._Out = np.multiply((1. - self._mask), self._mX)
 
 	def _IS(self, Xhat):
 		""" Compute the Itakura-Saito distance between the observed magnitude spectrum
@@ -432,8 +439,8 @@ class FrequencyMasking:
 		Returns:
 			dis   :     (float) Average Itakura-Saito distance
 		"""
-		r1 = (np.abs(self._mX)**self._alpha + self._eps) / (np.abs(Xhat) + self._eps)
-		lg = np.log((np.abs(self._mX)**self._alpha + self._eps)) - np.log((np.abs(Xhat) + self._eps))
+		r1 = (np.abs(self._mX) ** self._alpha + self._eps) / (np.abs(Xhat) + self._eps)
+		lg = np.log((np.abs(self._mX) ** self._alpha + self._eps)) - np.log((np.abs(Xhat) + self._eps))
 		return np.mean(r1 - lg - 1.)
 
 	def _dIS(self, Xhat):
@@ -446,7 +453,7 @@ class FrequencyMasking:
 		Returns:
 			dis'  :     (float) Average of first derivative of Itakura-Saito distance.
 		"""
-		dis = (np.abs(Xhat + self._eps) ** (-2.)) * (np.abs(Xhat) - np.abs(self._mX)**self._alpha)
+		dis = (np.abs(Xhat + self._eps) ** (-2.)) * (np.abs(Xhat) - np.abs(self._mX) ** self._alpha)
 		return (np.mean(dis))
 
 
