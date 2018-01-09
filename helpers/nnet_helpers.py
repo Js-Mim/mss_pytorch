@@ -8,9 +8,8 @@ from helpers.masking_methods import FrequencyMasking as Fm
 from mir_eval import separation as bss_eval
 from numpy.lib import stride_tricks
 from helpers import iterative_inference as it_infer
-from losses import loss_functions
+from helpers import tf_methods as tf
 import pickle as pickle
-import tf_methods as tf
 import numpy as np
 import os
 
