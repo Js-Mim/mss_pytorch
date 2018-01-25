@@ -7,6 +7,10 @@ Please use the above citation if you find any of the code useful.
 
 Listening Examples :  https://js-mim.github.io/mss_pytorch/
 
+### Extensions     :
+An improvement of this work, which includes a novel regularization technique, can be found here: https://github.com/dr-costas/mad-twinnet .
+
+
 ### Requirements   :
 - Numpy            :  numpy==1.13.1
 - SciPy            :  scipy==0.19.1
@@ -16,7 +20,6 @@ Listening Examples :  https://js-mim.github.io/mss_pytorch/
 - Trained Models   :  https://doi.org/10.5281/zenodo.1064805 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1064805.svg)](https://doi.org/10.5281/zenodo.1064805)
 					  Download and place them under "results/results_inference/"
 - MIR_Eval         :  mir_eval=='0.4'  (This is used only for unofficial cross-validation. For the reported evaluation please refer to: https://github.com/faroit/dsdtools)
-
 
 ### Usage          :
 - Clone the repository.
