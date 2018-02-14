@@ -1,14 +1,15 @@
 # Singing Voice Separation via Recurrent Inference and Skip-Filtering connections
 
 Support material and source code for the method described in : S.I. Mimilakis, K. Drossos, J.F. Santos, G. Schuller, T. Virtanen, Y. Bengio, "Monaural Singing Voice Separation with Skip-Filtering Connections and Recurrent Inference of Time-Frequency Mask", in arXiv:1711.01437 [cs.SD], Nov. 2017.
-This work was bumitted to ICASSP 2018.
+This work has been accepted for poster presentation at ICASSO 2018.
 
 Please use the above citation if you find any of the code useful.
 
 Listening Examples :  https://js-mim.github.io/mss_pytorch/
 
 ### Extensions     :
-An improvement of this work, which includes a novel regularization technique, can be found here: https://github.com/dr-costas/mad-twinnet .
+- An improvement of this work, which includes a novel regularization technique, can be found here: https://github.com/dr-costas/mad-twinnet .
+
 
 
 ### Requirements   :
