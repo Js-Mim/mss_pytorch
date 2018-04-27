@@ -8,8 +8,8 @@ Please use the above citation if you find any of the code useful.
 Listening Examples :  https://js-mim.github.io/mss_pytorch/
 
 ### Extensions     :
-- An improvement of this work, which includes a novel regularization technique, can be found here: https://github.com/dr-costas/mad-twinnet .
-- New branch called extensions. Contains our L1 penalized model as an alternative to recurrent inference. Code to be updated soon for the usage of a psychoacoustic model.
+- An improvement of this work, which includes a novel regularization technique using TwinNetworks, can be found here: https://github.com/dr-costas/mad-twinnet .
+- New branch called "nmr". Contains our L1 penalized model as an alternative to recurrent inference algorithm. That system was submitted to SiSEC-MUS18 and is denoted as "MDL1" & "MDLT". In addition to this, it is possible to use an additional variable, the inverse masking threshold, that can be used inside the cost function. The latter approach is ongoing work, for perceptual evaluation.
 
 
 ### Requirements   :
