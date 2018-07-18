@@ -21,9 +21,9 @@ def main(training, apply_sparsity):
     # Reproducible results
     np.random.seed(218)
     torch.manual_seed(218)
-    torch.cuda.manual_seed(218)
-    # Torch model
-    torch.set_default_tensor_type('torch.cuda.FloatTensor')
+    if torch.has_cudnn:
+        torch.cuda.manual_seed(218)
+        torch.set_default_tensor_type('torch.cuda.FloatTensor')
 
     # Analysis
     wsz = 2049   # Window-size
