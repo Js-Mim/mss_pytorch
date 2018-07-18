@@ -164,10 +164,10 @@ def main(training, apply_sparsity):
     else:
         print('-------  Loading pre-trained model   -------')
         print('-------  Loading inference weights  -------')
-        encoder.load_state_dict(torch.load('results/results_inference/torch_sps_encoder.pytorch'))
-        decoder.load_state_dict(torch.load('results/results_inference/torch_sps_decoder.pytorch'))
-        sp_decoder.load_state_dict(torch.load('results/results_inference/torch_sps_sp_decoder.pytorch'))
-        source_enhancement.load_state_dict(torch.load('results/results_inference/torch_sps_se.pytorch'))
+        encoder.load_state_dict(torch.load('results/results_inference/torch_sps_encoder.pytorch', map_location={key:'cpu' for key in ['gpu:0'] if not torch.has_cudnn}))
+        decoder.load_state_dict(torch.load('results/results_inference/torch_sps_decoder.pytorch', map_location={key:'cpu' for key in ['gpu:0'] if not torch.has_cudnn}))
+        sp_decoder.load_state_dict(torch.load('results/results_inference/torch_sps_sp_decoder.pytorch', map_location={key:'cpu' for key in ['gpu:0'] if not torch.has_cudnn}))
+        source_enhancement.load_state_dict(torch.load('results/results_inference/torch_sps_se.pytorch', map_location={key:'cpu' for key in ['gpu:0'] if not torch.has_cudnn}))
         print('-------------      Done        -------------')
 
     return encoder, decoder, sp_decoder, source_enhancement
