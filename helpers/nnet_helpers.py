@@ -327,8 +327,8 @@ def test_nnet(nnet, seqlen=100, olap=40, wsz=2049, N=4096, hop=384, B=16):
 
     x = x[olap/2 * hop:]
 
-    Io.wavWrite(y_recb, 44100, 16, 'results/test_files/test_sv.wav')
-    Io.wavWrite(x[:len(y_recb)], 44100, 16, 'results/test_files/test_mix.wav')
+    Io.wavWrite(y_recb, fs, 16, 'results/test_files/test_sv.wav')
+    Io.wavWrite(x[:len(y_recb)], fs, 16, 'results/test_files/test_mix.wav')
 
     return None
 
