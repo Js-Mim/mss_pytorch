@@ -25,8 +25,8 @@ Listening Examples :  https://js-mim.github.io/mss_pytorch/
 ### Usage          :
 - Clone the repository.
 - Add the base directory to your Python path.
-- While "mss_pytorch" is your current directory simply execute the "processes_scripts/main_script.py" file.
-- Arguments for training and testing are given to the main function of the "processes_scripts/main_script.py" file.
+- While "mss_pytorch" is your current directory simply execute the "processes_scripts/main_script.py" file (iPython is prefered if the base directory was not setted up correctly.)
+- Arguments for training and testing are given inside the main function of the "processes_scripts/main_script.py" file.
 
 ### Acknowledgements :
 The research leading to these results has received funding from the European Union's H2020 Framework Programme (H2020-MSCA-ITN-2014) under grant agreement no 642685 MacSeNet.
