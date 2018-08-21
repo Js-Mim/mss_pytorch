@@ -12,7 +12,14 @@ def kullback_leibler(x, x_hat):
     return torch.mean(rec)
 
 
+def nmr(x, x_hat, imt):
+    # NMR
+    err = torch.mean(torch.sum((0.5 * (x - x_hat).pow(2)) * imt.pow(2), dim=-1))
+    return 10. * torch.log10(err + 1e-6)
+
+
 def mse(x, x_hat):
-    return torch.mean(torch.pow(x - x_hat, 2.))
+    # MSE
+    return torch.mean(torch.sum(torch.pow(x - x_hat, 2.), dim=-1))
 
 # EOF
