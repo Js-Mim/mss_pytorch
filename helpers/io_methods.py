@@ -115,7 +115,7 @@ class AudioIO:
 		if fileName[convDict['mp3'][1]:] == 'mp3':
 			print(fileName[convDict['mp3'][1]:])
 			modfileName = os.path.join(os.path.abspath(fileName[:convDict['mp3'][1]] + 'wav'))
-			subprocess.call(convDict['mp3'][0]+modfileName, shell = True,  stdout=AudioIO.FNULL, stderr=subprocess.STDOUT)
+			subprocess.call(convDict['mp3'][0]+modfileName, shell = True, stdout=AudioIO.FNULL, stderr=subprocess.STDOUT)
 			samples, sampleRate = AudioIO.wavRead(modfileName, mono)
 			os.remove(modfileName)
 
