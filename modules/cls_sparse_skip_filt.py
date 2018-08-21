@@ -24,7 +24,7 @@ class BiGRUEncoder(nn.Module):
             T      : (int) Length of the time-sequence.
             N      : (int) Original dimensionallity of the input.
             F      : (int) Dimensionallity of the input
-                               (Amount of frequency sub-bands).
+                           (Amount of frequency sub-bands).
             L      : (int) Length of the half context time-sequence.
         """
         super(BiGRUEncoder, self).__init__()
@@ -69,7 +69,7 @@ class BiGRUEncoder(nn.Module):
 
             # Input is of the shape : (B (batches), T (time-sequence), N(frequency sub-bands))
             # Cropping some "un-necessary" frequency sub-bands
-            cxin = Variable(torch.pow(torch.from_numpy(input_x[:, :, :self._F]).cuda(), self._alpha))
+            cxin = Variable(torch.from_numpy(input_x[:, :, :self._F] ** self._alpha).cuda())
 
         else:
             # Initialization of the hidden states
@@ -79,19 +79,16 @@ class BiGRUEncoder(nn.Module):
 
             # Input is of the shape : (B (batches), T (time-sequence), N(frequency sub-bands))
             # Cropping some "un-necessary" frequency sub-bands
-            cxin = Variable(torch.pow(torch.from_numpy(input_x[:, :, :self._F]), self._alpha))
+            cxin = Variable(torch.from_numpy(input_x[:, :, :self._F] ** self._alpha))
 
         for t in range(self._T):
             # Bi-GRU Encoding
             h_t_fr = self.gruEncF((cxin[:, t, :]), h_t_fr)
             h_t_bk = self.gruEncB((cxin[:, self._T - t - 1, :]), h_t_bk)
-            # Residual connections
-            h_t_fr += cxin[:, t, :]
-            h_t_bk += cxin[:, self._T - t - 1, :]
 
-            # Remove context and concatenate
+            # Remove context, apply residual connections, and concatenate
             if (t >= self._L) and (t < self._T - self._L):
-                h_t = torch.cat((h_t_fr, h_t_bk), dim=1)
+                h_t = torch.cat((h_t_fr + cxin[:, t, :], h_t_bk + cxin[:, self._T - t - 1, :]), dim=1)
                 H_enc[:, t - self._L, :] = h_t
 
         return H_enc
@@ -164,6 +161,7 @@ class Decoder(nn.Module):
         for ts in range(self._T - (self._L * 2)):
             # GRU Decoding
             h_t_dec = self.gruDec(H_enc[:, ts, :], h_t_dec)
+            h_t_dec += H_enc[:, ts, :]
             H_j_dec[:, ts, :] = h_t_dec
 
         return H_j_dec
@@ -222,7 +220,6 @@ class SparseDecoder(nn.Module):
         if torch.has_cudnn:
             # Input is of the shape : (B, T, N)
             input_x = Variable(torch.from_numpy(input_x[:, self._L:-self._L, :]).cuda(), requires_grad=True)
-
         else:
             # Input is of the shape : (B, T, N)
             # Cropping some "un-necessary" frequency sub-bands
@@ -232,7 +229,6 @@ class SparseDecoder(nn.Module):
         mask_t1 = self.relu(self.ffDec(H_j_dec))
         # Apply skip-filtering connections
         Y_j = torch.mul(mask_t1, input_x)
-
         return Y_j, mask_t1
 
 
@@ -264,8 +260,8 @@ class SourceEnhancement(nn.Module):
         self._L = L
 
         # FF Source Enhancement Layer
-        self.ffSe_enc = nn.Linear(self._N, self._N/2)
-        self.ffSe_dec = nn.Linear(self._N/2, self._N)
+        self.ffSe_enc = nn.Linear(self._N, self._N)
+        self.ffSe_dec = nn.Linear(self._N, self._N)
 
         # Initialize the weights
         self.initialize_module()
@@ -293,6 +289,5 @@ class SourceEnhancement(nn.Module):
         Y_hat_filt = torch.mul(mask_t2, Y_hat)
 
         return Y_hat_filt
-
 
 # EOF
