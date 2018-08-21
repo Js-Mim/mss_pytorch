@@ -112,7 +112,7 @@ class FrequencyMasking:
 			mask:      (2D ndarray) Array that contains time frequency gain values
 
 		"""
-		print('Ideal Amplitude Ratio Mask')
+		print('Ideal Ratio Mask')
 		self._mask = np.divide(self._sTarget, (self._sTarget + self._nResidual + self._eps))
 
 	def IAM(self):
@@ -373,8 +373,8 @@ class FrequencyMasking:
 		cN = self._nResidual ** self._alpha
 
 		M = self._mX.shape[0]  # Number of channels
-		gF = 1. / M  # Gain factor
-		eM = cX.shape[0]  # Number of estimated channels
+		gF = 1. / M      # Gain factor
+		eM = cX.shape[0] # Number of estimated channels
 		F = cX.shape[1]  # Number of frequency samples
 		T = cX.shape[2]  # Number of time-frames
 		fout = np.zeros((M, F, T), dtype=np.float32)  # Initializing output
@@ -404,6 +404,7 @@ class FrequencyMasking:
 
 		self._Out = np.abs(fout)
 
+
 	def applyMask(self):
 		""" Compute the filtered output spectrogram.
 		Args:
@@ -428,7 +429,7 @@ class FrequencyMasking:
 		if self._method == 'expMask':
 			raise ValueError('Cannot compute that using such masking method.')
 		else:
-			self._Out = np.multiply((1. - self._mask), self._mX)
+			self._Out = np.multiply((1. - self._mask.clip(0., 1.11)), self._mX)
 
 	def _IS(self, Xhat):
 		""" Compute the Itakura-Saito distance between the observed magnitude spectrum
