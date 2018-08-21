@@ -15,8 +15,7 @@ eps = np.finfo(np.float32).tiny
 class TimeFrequencyDecomposition:
     """ A Class that performs time-frequency decompositions by means of a
         Discrete Fourier Transform, using Fast Fourier Transform algorithm
-        by SciPy, MDCT with modified type IV bases, PQMF,
-        and Fractional Fast Fourier Transform.
+        by SciPy.
     """
 
     @staticmethod
@@ -180,7 +179,7 @@ class TimeFrequencyDecomposition:
         return synw
 
     @staticmethod
-    def iSTFT(xmX, xpX, wsz, hop, smt=False) :
+    def iSTFT(xmX, xpX, wsz, hop, smt=False):
         """ Short Time Fourier Transform synthesis of given magnitude and phase spectra,
         via the above iDFT method.
         Args:
@@ -248,8 +247,8 @@ class TimeFrequencyDecomposition:
 
         # Analyse the first incoming channel to acquire the dimensions
         mX, pX = TimeFrequencyDecomposition.STFT(x[:, 0], w, N, hop)
-        smX = np.zeros((M, mX.shape[1], mX.shape[0]), dtype = np.float32)
-        spX = np.zeros((M, pX.shape[1], pX.shape[0]), dtype = np.float32)
+        smX = np.zeros((M, mX.shape[1], mX.shape[0]), dtype=np.float32)
+        spX = np.zeros((M, pX.shape[1], pX.shape[0]), dtype=np.float32)
         # Storing it to the actual return and free up some memory
         smX[0, :, :] = mX.T
         spX[0, :, :] = pX.T
@@ -285,7 +284,7 @@ class TimeFrequencyDecomposition:
 
         # Synthesize the first incoming channel to acquire the dimensions
         y = TimeFrequencyDecomposition.iSTFT(xmX[0, :, :].T, xpX[0, :, :].T, wsz, hop, smt)
-        yout = np.zeros((len(y), M), dtype = np.float32)
+        yout = np.zeros((len(y), M), dtype=np.float32)
         # Storing it to the actual return and free up some memory
         yout[:, 0] = y
         del y
