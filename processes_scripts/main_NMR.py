@@ -45,7 +45,6 @@ def main(training):
     epochs = 100                # Epochs
     init_lr = 1e-4              # Initial learning rate
     mnorm = 1.5	                # L2-based norm clipping
-    p = 2.                      # Error power
 
     # Data (Pre-defined)
     totTrainFiles = 100
